@@ -10,7 +10,6 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
-    console.log(reqBody);
 
     const user = await User.findOne({ email });
 
@@ -31,8 +30,6 @@ export async function POST(request: NextRequest) {
     });
 
     const savedUser = await newUser.save();
-
-    console.log(savedUser);
 
     return NextResponse.json({
       message: "User created successfully",
