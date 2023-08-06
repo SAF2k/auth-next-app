@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
 
     const user = await User.findOne({ email });
 
-    if (user) {
+    if (!user) {
       return NextResponse.json(
-        { error: "User already exists" },
+        { message: "User not found!" },
         { status: 400 }
       )}
 
@@ -24,13 +24,12 @@ export async function POST(request: NextRequest) {
       const validPassword = await bcryptjs.compare(password, user.password);
       if (!validPassword) {
         return NextResponse.json(
-          { error: "Invalid password" },
+          { message: "Invalid password" },
           { status: 400 }
         );
       }
 
       // create a token data
-
       const tokenData = {
         id: user._id,
         email: user.email,
@@ -38,7 +37,6 @@ export async function POST(request: NextRequest) {
       }
 
       // create a token
-
       const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"});
 
       const response = NextResponse.json({

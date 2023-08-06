@@ -7,12 +7,12 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-
-  const router = useRouter();
 
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
@@ -22,8 +22,9 @@ export default function LoginPage() {
     try {
       setLoading(true);
       const response = await axios.post("/api/users/login", user);
-      router.push("/");
+      console.log(response.data);
       toast.success(response.data.message);
+      router.push("/profile");
     } catch (error: any) {
       toast.error(error.message);
       
@@ -42,7 +43,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1>Login</h1>
+      <h1>{loading ? "Processing" : "Login"}</h1>
       <hr />
       <label htmlFor="email">email</label>
       <input
