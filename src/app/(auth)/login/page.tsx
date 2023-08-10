@@ -47,8 +47,15 @@ export default function LoginPage() {
       toast.success(response.data.message);
       router.push("/profile");
     } catch (error: any) {
-      toast.error(error.message);
-      console.log("hello");
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An error occurred. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }
@@ -84,7 +91,7 @@ export default function LoginPage() {
               <FormItem>
                 <FormLabel className="text-white">Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Password" {...field} />
+                  <Input type="password" placeholder="Password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
