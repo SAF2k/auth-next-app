@@ -60,7 +60,9 @@ export default function ProfilePage() {
               </button>
               <button
                 className="text-sm font-semibold leading-6"
-                onClick={() => router.push(`/profile/${data}`)}
+                onClick={() =>
+                  router.push(`/profile/${data}`)
+                }
               >
                 {"View Profile -->"}
               </button>
@@ -81,30 +83,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-
-    // <div className="flex flex-col items-center justify-center min-h-screen py-2 text-white">
-    //   <h1>Profile</h1>
-    //   <hr />
-    //   <p>Profile Page</p>
-    //   <h2>
-    //     {data === "nothing" ? (
-    //       "Nothing"
-    //     ) : (
-    //       <Link href={`/profile/${data}`}>{data}</Link>
-    //     )}
-    //   </h2>
-    //   <button
-    //     onClick={onLogout}
-    //     className="border rounded-md px-4 py-2 mt-5 hover:bg-red-600 hover:text-black"
-    //   >
-    //     LOGOUT
-    //   </button>
-    //   <button
-    //     onClick={getUserDetails}
-    //     className="text-center border rounded-md px-4 py-2 mt-5 hover:bg-red-600 hover:text-black"
-    //   >
-    //     Get User Details
-    //   </button>
-    // </div>
   );
 }
