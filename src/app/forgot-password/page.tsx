@@ -1,32 +1,38 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import * as z  from "zod";
+import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." })
+  email: z.string().email({ message: "Please enter a valid email." }),
 });
 
 export default function ForgotPassword() {
-
   const router = useRouter();
 
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: ""
+      email: "",
     },
   });
 
@@ -46,7 +52,6 @@ const [loading, setLoading] = useState(false);
       setLoading(false);
     }
   };
-
 
   return (
     <div className="bg-black text-white h-screen ">

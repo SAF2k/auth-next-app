@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import User from "@/models/userModel";
 import { connect } from "@/database/dbconfig";
 
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 400 });
     }
-    
+
     user.isVerified = true;
     user.verifyToken = undefined;
     user.verifyTokenExpiry = undefined;

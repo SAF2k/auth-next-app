@@ -1,7 +1,6 @@
 "use client";
 
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -60,9 +59,7 @@ export default function ProfilePage() {
               </button>
               <button
                 className="text-sm font-semibold leading-6"
-                onClick={() =>
-                  router.push(`/profile/${data}`)
-                }
+                onClick={() => router.push(`/profile/${data}`)}
               >
                 {"View Profile -->"}
               </button>

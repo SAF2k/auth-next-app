@@ -1,6 +1,5 @@
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
-import bcryptjs from "bcryptjs";
 import { sendEmail } from "@/helpers/mailer";
 import { connect } from "@/database/dbconfig";
 
@@ -17,12 +16,9 @@ export async function POST(request: NextRequest) {
     const user = await User.findOne({ email }).select("-password");
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User Not found" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User Not found" }, { status: 400 });
     }
-    
+
     //send verification email
     await sendEmail({ email, emailType: "RESET", userId: user._id });
 

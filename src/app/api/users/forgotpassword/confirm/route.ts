@@ -1,7 +1,7 @@
-import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-import { sendEmail } from "@/helpers/mailer";
+
+import User from "@/models/userModel";
 import { connect } from "@/database/dbconfig";
 
 connect();
@@ -11,11 +11,12 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const { password, data } = reqBody;
 
-    console.log(password.password.password);
-
     //hash password
     const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(password.password.password, salt);
+    const hashedPassword = await bcryptjs.hash(
+      password.password.password,
+      salt
+    );
 
     //check if user already exists
     const user = await User.findByIdAndUpdate(
@@ -32,9 +33,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-     user.forgotPasswordToken = undefined;
-     user.forgotPasswordTokenExpiry = undefined;
-     await user.save();
+    user.forgotPasswordToken = undefined;
+    user.forgotPasswordTokenExpiry = undefined;
+    await user.save();
 
     return NextResponse.json({
       message: "User created successfully",

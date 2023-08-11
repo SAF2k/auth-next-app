@@ -1,16 +1,24 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import * as z  from "zod";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z
   .object({
@@ -25,11 +33,11 @@ const formSchema = z
 export default function ResetPasswordPage() {
   const router = useRouter();
 
- const [token, setToken] = useState("");
- const [loading, setLoading] = useState(false);
- const [valid, setValid] = useState(false);
- const [error, setError] = useState(false);
- const [data, setData] = useState({});
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [valid, setValid] = useState(false);
+  const [error, setError] = useState(false);
+  const [data, setData] = useState({});
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,54 +45,55 @@ export default function ResetPasswordPage() {
       password: "",
       confirmPassword: "",
     },
-  })
+  });
 
   const onSubmit = async (password: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      await axios.post("/api/users/forgotpassword/confirm", { password :{password},data : {data} });
+      await axios.post("/api/users/forgotpassword/confirm", {
+        password: { password },
+        data: { data },
+      });
       toast.success("Password Reset Successfully");
       router.push("/login");
     } catch (error: any) {
       toast.error(error.response.data.message);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
-  }
+  };
 
- useEffect(() => {
-   const urlToken = window.location.search.split("=")[1];
-   setToken(urlToken || "");
- }, []);
+  useEffect(() => {
+    const urlToken = window.location.search.split("=")[1];
+    setToken(urlToken || "");
+  }, []);
 
- useEffect(() => {
-   const verifyUserEmail = async () => {
-     try {
-      setLoading(true);
-      const response = await axios.post("/api/users/forgotpassword/check", {
-        token,
-      });
+  useEffect(() => {
+    const verifyUserEmail = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.post("/api/users/forgotpassword/check", {
+          token,
+        });
 
-      if (response.data.success) {
-        setValid(true);
-        setData(response.data.user);
+        if (response.data.success) {
+          setValid(true);
+          setData(response.data.user);
+        }
+
+        setToken("");
+      } catch (error: any) {
+        setError(true);
+        console.log(error.response.data);
+      } finally {
+        setLoading(false);
       }
-        
-        setToken("")
-     } catch (error: any) {
-       setError(true);
-       console.log(error.response.data);
-     }
-     finally{
-      setLoading(false);
-     }
-   };
+    };
 
-   if (token.length > 0) {
-     verifyUserEmail();
-   }
- }, [token]);
+    if (token.length > 0) {
+      verifyUserEmail();
+    }
+  }, [token]);
 
   return (
     <div className="bg-black text-white h-screen ">

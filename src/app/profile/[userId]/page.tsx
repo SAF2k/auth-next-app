@@ -21,28 +21,28 @@ export default function UserProfilePage() {
   });
 
   const onLogout = async () => {
-     try {
-       const response = await axios.get("/api/users/logout");
-       toast.success(response.data.message);
-       router.push("/login");
-     } catch (error: any) {
-       toast.error(error.message);
-     }
-   };
-   
-    const getUserDetails = async () => {
-      const response = await axios.get("/api/users/user");
-      setData(response.data.data);
-    };
-
-    useEffect(() => {
-      getUserDetails();
-    }, []);
-
-    if (!data) {
-      // Data is not fetched yet, you can display loading spinner or message
-      return <div>Loading...</div>;
+    try {
+      const response = await axios.get("/api/users/logout");
+      toast.success(response.data.message);
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error.message);
     }
+  };
+
+  const getUserDetails = async () => {
+    const response = await axios.get("/api/users/user");
+    setData(response.data.data);
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
+  if (!data) {
+    // Data is not fetched yet, you can display loading spinner or message
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-black text-white h-screen">
@@ -72,10 +72,12 @@ export default function UserProfilePage() {
               <span className="font-semibold">Username:</span> {data.username}
             </p>
             <p className="mt-2 text-lg leading-8 text-slate-400">
-              <span className="font-semibold">Admin:</span> {data.isAdmin ? "Yes" : "No"}
+              <span className="font-semibold">Admin:</span>{" "}
+              {data.isAdmin ? "Yes" : "No"}
             </p>
             <p className="mt-2 text-lg leading-8 text-slate-400">
-                <span className="font-semibold">Verified:</span> {data.isVerified ? "Yes" : "No"}
+              <span className="font-semibold">Verified:</span>{" "}
+              {data.isVerified ? "Yes" : "No"}
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <button
