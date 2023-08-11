@@ -8,7 +8,8 @@ import React, { useEffect, useState } from "react";
 export default function VerifyEmailPage() {
 
   const router = useRouter();
-  const data  = "nothing";
+
+  const [data, setData] = useState("nothing");
 
   const [token, setToken] = useState("");
   const [verified, setVerified] = useState(false);
@@ -22,7 +23,7 @@ export default function VerifyEmailPage() {
   useEffect(() => {
      const verifyUserEmail = async () => {
        try {
-         await axios.post("/api/users/forgot-password", { token });
+         await axios.post("/api/users/verify-email", { token });
          setVerified(true);
        } catch (error: any) {
          setError(true);

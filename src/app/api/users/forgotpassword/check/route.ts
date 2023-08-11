@@ -10,24 +10,24 @@ export async function POST(request: NextRequest) {
     const { token } = reqBody;
 
     const user = await User.findOne({
-      verifyToken: token,
-      verifyTokenExpiry: { $gt: Date.now() },
-    });
+      forgotPasswordToken: token,
+      forgotPasswordTokenExpiry: { $gt: Date.now() },
+    }).select("-password");
 
     if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 400 });
-    }
-    
-    user.isVerified = true;
-    user.verifyToken = undefined;
-    user.verifyTokenExpiry = undefined;
-    await user.save();
+    }    
 
     return NextResponse.json({
-      message: "Email verified successfully",
+      message: "successfully",
       success: true,
+      user,
     });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+export async function GET(request: NextRequest) {
+    
 }

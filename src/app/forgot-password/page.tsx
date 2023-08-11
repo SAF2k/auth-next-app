@@ -33,9 +33,9 @@ const [loading, setLoading] = useState(false);
   const onReset = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/forgot-password", values);
+      const response = await axios.post("/api/users/forgotpassword", values);
       toast.success(response.data.message);
-      router.push("/forgot-password/verify");
+      router.push("/login");
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.error) {
         toast.error(error.response.data.error);
