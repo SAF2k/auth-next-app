@@ -1,58 +1,44 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z  from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  email: z.string().email({ message: "Please enter a valid email." })
 });
 
-export default function LoginPage() {
+export default function ForgotPassword() {
+
   const router = useRouter();
+
+const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: ""
     },
   });
 
-  const [loading, setLoading] = React.useState(false);
-
-  const onLogin = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onReset = async (values: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/login", values);
+      const response = await axios.post("/api/users/forgot-password", values);
       toast.success(response.data.message);
-      router.push("/profile");
+      router.push("/forgot-password/verify");
     } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
       } else {
         toast.error("An error occurred. Please try again later.");
       }
@@ -60,6 +46,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="bg-black text-white h-screen ">
@@ -76,14 +63,13 @@ export default function LoginPage() {
             }}
           />
         </div>
-
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onLogin)}
+            onSubmit={form.handleSubmit(onReset)}
             className="space-y-8 bg-black sm:w-4/5 md:w-3/5 lg:w-2/5 xl:w-1/4 px-4 sm:px-8 rounded-lg shadow shadow-popover py-8 sm:py-11"
           >
             <h1 className="text-primary text-2xl sm:text-3xl text-center my-4 bg-slate-500 rounded-md py-2">
-              {loading ? "Processing" : "Login"}
+              {loading ? "Processing" : "Reset Password"}
             </h1>
             <FormField
               name="email"
@@ -102,24 +88,6 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              name="password"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      className="text-black"
-                      placeholder="Password"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button
               className="w-full bg-blue-400 text-black disabled:opacity-50 hover:bg-blue-300"
               type="submit"
@@ -128,10 +96,7 @@ export default function LoginPage() {
               Submit
             </Button>
             <div className="flex justify-center sm:justify-end text-emerald-50 px-3">
-              <Link href="signup">Not a member?</Link>
-            </div>
-            <div className="flex justify-center sm:justify-end text-emerald-50 px-3">
-              <Link href="forgot-password">Forgot Password?</Link>
+              <Link href="login">Back To Login?</Link>
             </div>
           </form>
         </Form>
@@ -152,4 +117,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -10,7 +9,6 @@ interface UserData {
   isAdmin: boolean;
   isVerified: boolean;
   username: string;
-  // Add other properties if needed
 }
 
 export default function UserProfilePage() {
@@ -31,8 +29,6 @@ export default function UserProfilePage() {
        toast.error(error.message);
      }
    };
-
-   console.log(data);
    
     const getUserDetails = async () => {
       const response = await axios.get("/api/users/user");

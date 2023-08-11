@@ -1,65 +1,55 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import * as z  from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
   password: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  confirmPassword: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
 });
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
+  const param = useParams()
+  console.log(param);
+
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const [loading, setLoading] = React.useState(false);
-
-  const onLogin = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    try {
-      setLoading(true);
-      const response = await axios.post("/api/users/login", values);
-      toast.success(response.data.message);
-      router.push("/profile");
-    } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("An error occurred. Please try again later.");
+  useEffect(() => {
+    const verifyUserEmail = async () => {
+      try {
+        await axios.post("/api/users/forgot-password/", { param });
+        toast.success("Password Change successfully");
+      } catch (error: any) {
+        console.log(error.response.data);
       }
-    } finally {
-      setLoading(false);
+    };
+    if (token.length > 0) {
+      verifyUserEmail();
     }
-  };
+  }, [token]);
 
   return (
     <div className="bg-black text-white h-screen ">
@@ -79,29 +69,12 @@ export default function LoginPage() {
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onLogin)}
+            onSubmit={form.handleSubmit((data) => console.log(data))}
             className="space-y-8 bg-black sm:w-4/5 md:w-3/5 lg:w-2/5 xl:w-1/4 px-4 sm:px-8 rounded-lg shadow shadow-popover py-8 sm:py-11"
           >
             <h1 className="text-primary text-2xl sm:text-3xl text-center my-4 bg-slate-500 rounded-md py-2">
-              {loading ? "Processing" : "Login"}
+              {loading ? "Processing" : "Change Password"}
             </h1>
-            <FormField
-              name="email"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      className="text-black"
-                      placeholder="your@mail.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               name="password"
               control={form.control}
@@ -110,9 +83,27 @@ export default function LoginPage() {
                   <FormLabel className="text-white">Password</FormLabel>
                   <FormControl>
                     <Input
+                      className="text-black"
+                      type="password"
+                      placeholder="Password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="confirmPassword"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-white">Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
                       type="password"
                       className="text-black"
-                      placeholder="Password"
+                      placeholder="Confirm Password"
                       {...field}
                     />
                   </FormControl>
@@ -128,10 +119,7 @@ export default function LoginPage() {
               Submit
             </Button>
             <div className="flex justify-center sm:justify-end text-emerald-50 px-3">
-              <Link href="signup">Not a member?</Link>
-            </div>
-            <div className="flex justify-center sm:justify-end text-emerald-50 px-3">
-              <Link href="forgot-password">Forgot Password?</Link>
+              <Link href="login">Back to Login?</Link>
             </div>
           </form>
         </Form>
@@ -152,4 +140,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
